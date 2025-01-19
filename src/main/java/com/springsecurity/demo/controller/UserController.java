@@ -1,6 +1,7 @@
 package com.springsecurity.demo.controller;
 
 import com.springsecurity.demo.model.User;
+import com.springsecurity.demo.service.JWTService;
 import com.springsecurity.demo.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,12 +19,17 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final JWTService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
         try {
-            User savedUser = userService.register(user);
-            return new ResponseEntity<>(savedUser, HttpStatus.OK);
+            Map.Entry<User, Boolean> registerResult = userService.register(user);
+
+            if (!registerResult.getValue())
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            else
+                return new ResponseEntity<>(registerResult.getKey(), HttpStatus.OK);
         } catch(IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -56,6 +62,7 @@ public class UserController {
 
     @DeleteMapping("/user")
     public ResponseEntity<?> deleteUser(@RequestParam Integer userId) {
+        jwtService.revokeAllUserTokens(userId);
         userService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

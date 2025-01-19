@@ -33,13 +33,19 @@ public class UserService {
 
     private final ApplicationContext context;
 
-    public User register(User user) {
+    public Map.Entry<User, Boolean> register(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
         //user.setRole(Role.USER);
 
+        User existingUser = userRepository.findByUsername(user.getUsername());
+        if (existingUser != null) {
+            return Map.entry(existingUser, false);
+        }
+
         userRepository.save(user);
 
-        return user;
+        return Map.entry(user, true);
+
     }
 
     public Map<String, String> verify(User user) {
