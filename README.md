@@ -1,8 +1,8 @@
 # SpringSecurityJWTDemo
 Demo RESTful API for demonstrating Spring Security with JWT tokens
 
-The application demonstrates registering, logging in and out, using JWT access and refresh tokens. It exposes both unauthorized routes that don't require an access token - /register, /login and 
-authorized routes - /home, /token/refresh, /user (for delete operation), and /logout.
+The application demonstrates registering, logging in and out, accessing data and deleting the user profile using JWT access and refresh tokens. It exposes both unauthorized routes that don't require an access token - /register, /login and 
+authorized routes - /, /token/refresh, /user (for delete operation), and /logout.
 
 The user can register (with a unique username) and then log in via /register and /login routes, respectively. On login, the user is granted an access and a refresh token. This token must be sent in the Authorization header as 
 Bearer <value_of_token> to access the authorized routes.
